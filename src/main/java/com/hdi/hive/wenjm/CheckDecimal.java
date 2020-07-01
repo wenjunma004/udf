@@ -116,7 +116,8 @@ public class CheckDecimal extends GenericUDF {
                 HiveDecimalObjectInspector decimalOI =
                         (HiveDecimalObjectInspector) argumentOI;
                 HiveDecimalWritable val = decimalOI.getPrimitiveWritableObject(valObject);
-                // check logic in here
+
+                // NPE check logic start
 
                 HiveDecimal decimalTypeInfo = decimalOI.getPrimitiveJavaObject(valObject);
                 DecimalTypeInfo decTypeInfo = (DecimalTypeInfo)decimalOI.getTypeInfo();
@@ -129,6 +130,8 @@ public class CheckDecimal extends GenericUDF {
                    throw new UDFArgumentException(
                            "NPE happen when value is: " + val);
                }
+
+                // NPE check logic end
 
                 if (val != null) {
                     resultDecimal.set(val);
