@@ -46,30 +46,30 @@ public class CheckDecimal2 extends GenericUDTF {
 
     @Override
     public void process(Object[] arguments) throws HiveException {
-
+        ArrayList<Object[]> results = new ArrayList<Object[]>();
         Object valObject = arguments[0];
         if (valObject == null) {
-           // handle it later
-        }
-        ArrayList<Object[]> results = new ArrayList<Object[]>();
+            results.add(new Object[] {"NULL", "OK" });
+        }else{
+            HiveDecimalObjectInspector decimalOI =
+                    (HiveDecimalObjectInspector) argumentOI;
+            HiveDecimalWritable val = decimalOI.getPrimitiveWritableObject(valObject);
 
-        HiveDecimalObjectInspector decimalOI =
-                (HiveDecimalObjectInspector) argumentOI;
-        HiveDecimalWritable val = decimalOI.getPrimitiveWritableObject(valObject);
+            // NPE check logic start
 
-        // NPE check logic start
-
-        HiveDecimal decimalTypeInfo = decimalOI.getPrimitiveJavaObject(valObject);
-        DecimalTypeInfo decTypeInfo = (DecimalTypeInfo)decimalOI.getTypeInfo();
-        try {
+            HiveDecimal decimalTypeInfo = decimalOI.getPrimitiveJavaObject(valObject);
+            DecimalTypeInfo decTypeInfo = (DecimalTypeInfo)decimalOI.getTypeInfo();
+            try {
 //          int prec = decTypeInfo.precision();
-            int scale = decTypeInfo.scale();
-            byte[] decimalBytes = decimalTypeInfo.bigIntegerBytesScaled(scale);
+                int scale = decTypeInfo.scale();
+                byte[] decimalBytes = decimalTypeInfo.bigIntegerBytesScaled(scale);
 
-            results.add(new Object[] {valObject.toString(), "OK" });
-        }catch (NullPointerException npe){
-            npe.printStackTrace();
-            results.add(new Object[] {valObject.toString(), "FAIL" });
+                results.add(new Object[] {valObject.toString(), "OK" });
+            }catch (NullPointerException npe){
+                npe.printStackTrace();
+                results.add(new Object[] {valObject.toString(), "FAIL" });
+
+            }
 
         }
 
