@@ -128,16 +128,9 @@ public class CheckDecimal extends GenericUDF {
                    byte[] decimalBytes = decimalTypeInfo.bigIntegerBytesScaled(scale);
                }catch (NullPointerException npe){
                    npe.printStackTrace();
-                   System.out.println("NPE :"+ val);
-               }
-               if(true){
                    throw new UDFArgumentException(
-                           "check only takes SHORT/BYTE/INT/LONG/DOUBLE/FLOAT/STRING/DECIMAL types, got " + val);
+                           "NPE happen when value is: " + val);
                }
-
-
-
-
 
                 if (val != null) {
                     resultDecimal.set(val);
