@@ -20,7 +20,6 @@ import org.apache.hadoop.hive.serde2.objectinspector.primitive.PrimitiveObjectIn
 import org.apache.hadoop.hive.serde2.typeinfo.DecimalTypeInfo;
 import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.LongWritable;
-import org.apache.hadoop.io.Text;
 
 import java.io.StringWriter;
 
@@ -40,7 +39,6 @@ public class CheckDecimal extends GenericUDF {
     private final HiveDecimalWritable resultDecimal = new HiveDecimalWritable();
     private transient PrimitiveObjectInspector argumentOI;
     private transient ObjectInspectorConverters.Converter inputConverter;
-    private Text result = new Text();
 
     @Override
     public ObjectInspector initialize(ObjectInspector[] arguments) throws UDFArgumentException {
@@ -133,20 +131,25 @@ public class CheckDecimal extends GenericUDF {
                    npe.printStackTrace();
 
                    if (val != null) {
-                       result.set("-0.00");
+                       resultDecimal.mutateAbs();
+                       val.setFromDouble(0.01);
                    }
-                   return result;
+                   return val;
 //
 //                   throw new UDFArgumentException(
 //                           "NPE happen when value is: " + val);
+
 
                }
 
                 // NPE check logic end
 
-                result.set("+"+val.toString());
-
-                return result;
+                if (val != null) {
+                    resultDecimal.set(val);
+                    resultDecimal.mutateAbs();
+                    val = resultDecimal;
+                }
+                return val;
             default:
                 throw new UDFArgumentException(
                         "ABS only takes SHORT/BYTE/INT/LONG/DOUBLE/FLOAT/STRING/DECIMAL types, got " + inputType);
