@@ -1,4 +1,4 @@
-package com.hdi.hive.custom;
+package com.hdi.hive.wenjm;
 
 import org.apache.hadoop.hive.common.type.HiveDecimal;
 import org.apache.hadoop.hive.ql.exec.Description;
@@ -20,8 +20,6 @@ import org.apache.hadoop.hive.serde2.objectinspector.primitive.PrimitiveObjectIn
 import org.apache.hadoop.hive.serde2.typeinfo.DecimalTypeInfo;
 import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.LongWritable;
-
-import javax.swing.*;
 
 @Description(name = "abs",
         value = "_FUNC_(x) - returns the absolute value of x",
