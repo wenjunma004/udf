@@ -1,5 +1,6 @@
 package com.hdi.hive.custom;
 
+import org.apache.hadoop.hive.common.type.HiveDecimal;
 import org.apache.hadoop.hive.ql.exec.Description;
 import org.apache.hadoop.hive.ql.exec.UDFArgumentException;
 import org.apache.hadoop.hive.ql.exec.UDFArgumentLengthException;
@@ -16,8 +17,11 @@ import org.apache.hadoop.hive.serde2.objectinspector.ObjectInspectorConverters;
 import org.apache.hadoop.hive.serde2.objectinspector.PrimitiveObjectInspector;
 import org.apache.hadoop.hive.serde2.objectinspector.primitive.HiveDecimalObjectInspector;
 import org.apache.hadoop.hive.serde2.objectinspector.primitive.PrimitiveObjectInspectorFactory;
+import org.apache.hadoop.hive.serde2.typeinfo.DecimalTypeInfo;
 import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.LongWritable;
+
+import javax.swing.*;
 
 @Description(name = "abs",
         value = "_FUNC_(x) - returns the absolute value of x",
@@ -114,6 +118,23 @@ public class CheckDecimal extends GenericUDF {
                 HiveDecimalObjectInspector decimalOI =
                         (HiveDecimalObjectInspector) argumentOI;
                 HiveDecimalWritable val = decimalOI.getPrimitiveWritableObject(valObject);
+                // check logic in here
+
+                HiveDecimal decimalTypeInfo = decimalOI.getPrimitiveJavaObject(valObject);
+                DecimalTypeInfo decTypeInfo = (DecimalTypeInfo)decimalOI.getTypeInfo();
+               try {
+//                   int prec = decTypeInfo.precision();
+                   int scale = decTypeInfo.scale();
+                   byte[] decimalBytes = decimalTypeInfo.bigIntegerBytesScaled(scale);
+               }catch (NullPointerException npe){
+                   npe.printStackTrace();
+                   System.out.println("NPE :"+ val);
+               }
+               
+                System.out.println("TEST :"+ val);
+
+
+
 
                 if (val != null) {
                     resultDecimal.set(val);
