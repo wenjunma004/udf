@@ -20,6 +20,9 @@ import org.apache.hadoop.hive.serde2.objectinspector.primitive.PrimitiveObjectIn
 import org.apache.hadoop.hive.serde2.typeinfo.DecimalTypeInfo;
 import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.LongWritable;
+import org.apache.hadoop.io.Text;
+
+import java.io.StringWriter;
 
 @Description(name = "abs",
         value = "_FUNC_(x) - returns the absolute value of x",
@@ -37,6 +40,7 @@ public class CheckDecimal extends GenericUDF {
     private final HiveDecimalWritable resultDecimal = new HiveDecimalWritable();
     private transient PrimitiveObjectInspector argumentOI;
     private transient ObjectInspectorConverters.Converter inputConverter;
+    private Text result = new Text();
 
     @Override
     public ObjectInspector initialize(ObjectInspector[] arguments) throws UDFArgumentException {
@@ -127,18 +131,22 @@ public class CheckDecimal extends GenericUDF {
                    byte[] decimalBytes = decimalTypeInfo.bigIntegerBytesScaled(scale);
                }catch (NullPointerException npe){
                    npe.printStackTrace();
-                   throw new UDFArgumentException(
-                           "NPE happen when value is: " + val);
+
+                   if (val != null) {
+                       result.set("-0.00");
+                   }
+                   return result;
+//
+//                   throw new UDFArgumentException(
+//                           "NPE happen when value is: " + val);
+
                }
 
                 // NPE check logic end
 
-                if (val != null) {
-                    resultDecimal.set(val);
-                    resultDecimal.mutateAbs();
-                    val = resultDecimal;
-                }
-                return val;
+                result.set("+"+val.toString());
+
+                return result;
             default:
                 throw new UDFArgumentException(
                         "ABS only takes SHORT/BYTE/INT/LONG/DOUBLE/FLOAT/STRING/DECIMAL types, got " + inputType);
