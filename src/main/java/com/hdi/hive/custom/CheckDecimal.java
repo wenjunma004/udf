@@ -130,8 +130,11 @@ public class CheckDecimal extends GenericUDF {
                    npe.printStackTrace();
                    System.out.println("NPE :"+ val);
                }
-               
-                System.out.println("TEST :"+ val);
+               if(true){
+                   throw new UDFArgumentException(
+                           "check only takes SHORT/BYTE/INT/LONG/DOUBLE/FLOAT/STRING/DECIMAL types, got " + val);
+               }
+
 
 
 
