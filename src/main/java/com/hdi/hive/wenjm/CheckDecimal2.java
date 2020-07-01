@@ -52,31 +52,28 @@ public class CheckDecimal2 extends GenericUDTF {
            // handle it later
         }
         ArrayList<Object[]> results = new ArrayList<Object[]>();
-        results.add(new Object[] {valObject.toString(), "OK" });
 
-//        HiveDecimalObjectInspector decimalOI =
-//                (HiveDecimalObjectInspector) argumentOI;
-//        HiveDecimalWritable val = decimalOI.getPrimitiveWritableObject(valObject);
-//
-//        // NPE check logic start
-//
-//        HiveDecimal decimalTypeInfo = decimalOI.getPrimitiveJavaObject(valObject);
-//        DecimalTypeInfo decTypeInfo = (DecimalTypeInfo)decimalOI.getTypeInfo();
-//        try {
-////                   int prec = decTypeInfo.precision();
-//            int scale = decTypeInfo.scale();
-//            byte[] decimalBytes = decimalTypeInfo.bigIntegerBytesScaled(scale);
-//        }catch (NullPointerException npe){
-//            npe.printStackTrace();
-//
-//
-//
-//        }
+        HiveDecimalObjectInspector decimalOI =
+                (HiveDecimalObjectInspector) argumentOI;
+        HiveDecimalWritable val = decimalOI.getPrimitiveWritableObject(valObject);
+
+        // NPE check logic start
+
+        HiveDecimal decimalTypeInfo = decimalOI.getPrimitiveJavaObject(valObject);
+        DecimalTypeInfo decTypeInfo = (DecimalTypeInfo)decimalOI.getTypeInfo();
+        try {
+//          int prec = decTypeInfo.precision();
+            int scale = decTypeInfo.scale();
+            byte[] decimalBytes = decimalTypeInfo.bigIntegerBytesScaled(scale);
+
+            results.add(new Object[] {valObject.toString(), "OK" });
+        }catch (NullPointerException npe){
+            npe.printStackTrace();
+            results.add(new Object[] {valObject.toString(), "FAIL" });
+
+        }
 
         // NPE check logic end
-
-
-
         Iterator<Object[]> it = results.iterator();
 
         while (it.hasNext()){
