@@ -49,7 +49,7 @@ public class CheckDecimal2 extends GenericUDTF {
         ArrayList<Object[]> results = new ArrayList<Object[]>();
         Object valObject = arguments[0];
         if (valObject == null) {
-            results.add(new Object[] {"NULL", "OK" });
+            results.add(new Object[] {"NULL", "FAIL" });
         }else{
             HiveDecimalObjectInspector decimalOI =
                     (HiveDecimalObjectInspector) argumentOI;
